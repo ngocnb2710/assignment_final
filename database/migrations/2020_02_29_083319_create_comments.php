@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateComments extends Migration
+class CreateCommentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -18,6 +18,7 @@ class CreateComments extends Migration
             $table->integer('post_id');
             $table->text('content');
             $table->integer('user_id');
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }

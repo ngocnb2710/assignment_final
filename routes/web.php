@@ -13,23 +13,23 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+
+Route::group(['middleware'=>'ClearCacheMiddleware'],function(){
+    Auth::routes();
+    Route::group(['middleware'=>'LoginMiddleware'],function(){
+        Route::get('/','user\ClientController@index');
+        Route::post('add-post','user\PostController@add');
+        Route::get('post-detail/{id}','user\PostController@post');
+        Route::post('comment','user\CommentController@comment');
+    });
+    Route::group(['prefix'=>'admin','middleware'=>'IsAdminMiddleware'],function(){
+        Route::get('list','admin\PostController@index');
+        Route::group(['prefix'=>'category'],function(){
+            Route::get('add-cate','admin\CategoryController@addForm');
+            Route::get('add','admin\CategoryController@add');
+        });
+        Route::get('update-comment/{id}','admin\CommentController@update');
+        Route::get('comment-list','admin\CommentController@index');
+    });
 });
 
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
-
-Route::group(['prefix' => 'admin', 'middleware' => 'AdminMiddleware'], function () {
-    Route::group(['prefix' => 'post'], function () {
-        Route::get('list', 'PostController@index');
-        Route::get('add-post', 'PostController@addForm');
-        Route::post('update-post', 'PostController@updateForm');
-    });
-    Route::group(['prefix' => 'cate'], function () {
-        Route::get('category', 'CategoryController@category');
-        Route::post('update-cate', 'CategoryController@add');
-    });
-
-});
